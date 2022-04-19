@@ -1,5 +1,6 @@
 import datetime
 import hashlib
+import json
 import sys
 import time
 
@@ -7,6 +8,7 @@ from flask import Flask, jsonify, abort, make_response, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_sqlalchemy import SQLAlchemy
+from marshmallow import Schema, fields
 
 app = Flask(__name__)
 # json 不排序
@@ -37,21 +39,23 @@ class Video(db.Model, BaseMixin):
     rate = db.Column(db.Float)
     pub_date = db.Column(db.DateTime)
 
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "create_time": self.create_time.strftime('%m-%d-%Y %H:%M:%S'),
-            "update_time": self.update_time.strftime('%m-%d-%Y %H:%M:%S'),
-            "state": self.state,
-            "vid": self.vid,
-            "rate": self.rate,
-            "pub_date": self.pub_date.strftime('%m-%d-%Y, %H:%M:%S')
-        }
+
+class BaseSchema(Schema):
+    id = fields.Integer()
+    create_time = fields.DateTime()
+    update_time = fields.DateTime()
+    state = fields.Integer()
+
+
+class VideoSchema(BaseSchema):
+    vid = fields.String()
+    rate = fields.Float()
+    pub_date = fields.DateTime()
 
 
 # 全局异常处理
 @app.errorhandler(Exception)
-def handle_exception():
+def handle_exception(e):
     return jsonify({
         'message': 'system error'
     }), 500
@@ -87,7 +91,7 @@ def get_list(day):
         .paginate(page, per_page=pages, error_out=False)
     return jsonify({
         'data': {
-            'record': [n.to_dict() for n in pagination.items],
+            'record': json.loads(VideoSchema().dumps(pagination.items, many=True)),
             'page': pagination.page,
             'pages': pagination.pages,
             'total': pagination.total

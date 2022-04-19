@@ -41,7 +41,15 @@ class BaseMixin:
 class Video(db.Model, BaseMixin):
     __tablename__ = 'video'
     vid = db.Column(db.String)
+    title = db.Column(db.String)
+    create_date = db.Column(db.DateTime)
+    info_hash = db.Column(db.String)
+    size = db.Column(db.Float)
+    speeders = db.Column(db.Integer)
+    downloads = db.Column(db.Integer)
+    completed = db.Column(db.Integer)
     rate = db.Column(db.Float)
+    screenshot = db.Column(db.String)
     pub_date = db.Column(db.DateTime)
 
 
@@ -54,7 +62,15 @@ class BaseSchema(Schema):
 
 class VideoSchema(BaseSchema):
     vid = fields.String()
+    title = fields.String()
+    create_date = fields.DateTime()
+    info_hash = fields.String()
+    size = fields.Float()
+    speeders = fields.String()
+    downloads = fields.String()
+    completed = fields.String()
     rate = fields.Float()
+    screenshot = fields.String()
     pub_date = fields.DateTime()
 
 

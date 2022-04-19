@@ -1,6 +1,7 @@
 import datetime
 import hashlib
 import json
+import logging
 import sys
 import time
 
@@ -11,10 +12,13 @@ from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields
 
 app = Flask(__name__)
+
 # json 不排序
 app.config['JSON_SORT_KEYS'] = False
+
 # json 中文
 app.config['JSON_AS_ASCII'] = False
+
 # 数据库连接
 args = sys.argv
 if len(args) <= 1:
@@ -22,6 +26,7 @@ if len(args) <= 1:
 db_host, db_port, db_user, db_password, db_name, host = args[1], args[2], args[3], args[4], args[5], args[6]
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://%s:%s@%s:%s/%s" % (db_user, db_password, db_host, db_port, db_name)
 db = SQLAlchemy(app)
+
 # 限速
 limiter = Limiter(app=app, key_func=get_remote_address, default_limits=["20/minute"])
 
@@ -56,6 +61,7 @@ class VideoSchema(BaseSchema):
 # 全局异常处理
 @app.errorhandler(Exception)
 def handle_exception(e):
+    logging.exception(e)
     return jsonify({
         'message': 'system error'
     }), 500

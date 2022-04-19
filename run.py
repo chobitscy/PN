@@ -93,7 +93,7 @@ def request_handle():
     # 当客户端和服务器的时间相差 20 秒，客户端错误
     if int(round(time.time() * 1000)) - int(timestamp) > 20 * 1000:
         abort(make_response(jsonify({'message': 'Illegal request'}), 400))
-    value = str(hashlib.md5(str('%.2f' % float(timestamp / len(request.url))).encode('utf-8')).hexdigest()).upper()
+    value = str(hashlib.md5(str('%.2f' % float(timestamp / len(request.path))).encode('utf-8')).hexdigest()).upper()
     if value is None or value != sign:
         abort(make_response(jsonify({'message': 'Illegal request'}), 400))
 

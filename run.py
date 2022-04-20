@@ -4,6 +4,7 @@ import json
 import logging
 import sys
 import time
+from configparser import ConfigParser
 
 import flask_limiter
 from flask import Flask, jsonify, abort, make_response, request
@@ -22,23 +23,34 @@ app.config['JSON_SORT_KEYS'] = False
 # json 中文
 app.config['JSON_AS_ASCII'] = False
 
+# 配置
+cfg = ConfigParser()
+cfg.read('config.ini', encoding='utf-8')
+db_host, db_port = cfg.get('db', 'host'), cfg.get('db', 'port')
+db_user, db_password, db_name = cfg.get('db', 'user'), cfg.get('db', 'password'), cfg.get('db', 'name')
+host, limit = cfg.get('server', 'host'), cfg.get('server', 'limit')
+expired, env = cfg.getint('server', 'expired'), cfg.get('server', 'env')
+redis_host, redis_port = cfg.get('redis', 'host'), cfg.get('redis', 'port')
+redis_user, redis_password = cfg.get('redis', 'user'), cfg.get('redis', 'password')
+
 # 数据库连接
 args = sys.argv
-if len(args) <= 1:
-    raise ValueError('参数不完整')
-db_host, db_port, db_user, db_password, db_name, host, env = args[1], args[2], args[3], args[4], args[5], args[6], args[
-    7]
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://%s:%s@%s:%s/%s" % (db_user, db_password, db_host, db_port, db_name)
 db = SQLAlchemy(app)
 
 # 限速
-limiter = Limiter(app=app, key_func=get_remote_address, default_limits=["100/minute"])
+limiter = Limiter(app=app, key_func=get_remote_address, default_limits=[limit])
 
 redis = Redis()
+if redis_user is None or redis_password is None:
+    redis_url = 'redis://%s:%s' % (redis_host, redis_port)
+else:
+    redis_url = 'redis://%s:%s@%s:%s' % (redis_user, redis_password, redis_host, redis_port)
 cache = Cache(config={
     'CACHE_TYPE': 'redis',
     'CACHE_KEY_PREFIX': 'PN',
-    'CACHE_REDIS_URL': 'redis://localhost:6379'
+    'CACHE_DEFAULT_TIMEOUT': 60 * expired,
+    'CACHE_REDIS_URL': redis_url
 })
 cache.init_app(app)
 
@@ -115,7 +127,7 @@ def request_handle():
 
 
 @app.route('/popular/<day>', methods=['GET'])
-@cache.cached(timeout=20 * 60)
+@cache.cached()
 def popular(day):
     page, pages, sort = parameter_handler(Video, '-rate')
     try:

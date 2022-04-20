@@ -127,7 +127,7 @@ def request_handle():
 
 
 @app.route('/popular/<day>', methods=['GET'])
-@cache.cached()
+@cache.cached(query_string=True)
 def popular(day):
     page, pages, sort = parameter_handler(Video, '-rate')
     try:

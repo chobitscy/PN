@@ -7,10 +7,12 @@ import time
 
 import flask_limiter
 from flask import Flask, jsonify, abort, make_response, request
+from flask_caching import Cache
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields
+from redis import Redis
 
 app = Flask(__name__)
 
@@ -30,7 +32,15 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://%s:%s@%s:%s/%s" % (db_user, db_
 db = SQLAlchemy(app)
 
 # 限速
-limiter = Limiter(app=app, key_func=get_remote_address, default_limits=["2/minute"])
+limiter = Limiter(app=app, key_func=get_remote_address, default_limits=["100/minute"])
+
+redis = Redis()
+cache = Cache(config={
+    'CACHE_TYPE': 'redis',
+    'CACHE_KEY_PREFIX': 'PN',
+    'CACHE_REDIS_URL': 'redis://localhost:6379'
+})
+cache.init_app(app)
 
 
 class BaseMixin:
@@ -105,7 +115,8 @@ def request_handle():
 
 
 @app.route('/popular/<day>', methods=['GET'])
-def get_list(day):
+@cache.cached(timeout=20 * 60)
+def popular(day):
     page, pages, sort = parameter_handler(Video, '-rate')
     try:
         day = int(day)

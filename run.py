@@ -77,6 +77,9 @@ class Video(db.Model, BaseMixin):
     pub_date = db.Column(db.DateTime)
     thumb = db.Column(db.String)
     print_screen = db.Column(db.String)
+    author = db.Column(db.String)
+    author_home = db.Column(db.String)
+    tags = db.Column(db.String)
 
 
 class BaseSchema(Schema):
@@ -100,6 +103,9 @@ class VideoSchema(BaseSchema):
     pub_date = fields.DateTime()
     thumb = fields.String()
     print_screen = fields.String()
+    author = fields.String()
+    author_home = fields.String()
+    tags = fields.String()
 
 
 # 全局异常处理

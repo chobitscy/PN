@@ -60,6 +60,7 @@ class BaseMixin:
     create_time = db.Column(db.DateTime)
     update_time = db.Column(db.DateTime)
     state = db.Column(db.Integer)
+    type_id = db.Column(db.Integer)
 
 
 class Video(db.Model, BaseMixin):
@@ -80,6 +81,7 @@ class Video(db.Model, BaseMixin):
     author = db.Column(db.String)
     author_home = db.Column(db.String)
     tags = db.Column(db.String)
+    product = db.Column(db.String)
 
 
 class BaseSchema(Schema):
@@ -87,6 +89,7 @@ class BaseSchema(Schema):
     create_time = fields.DateTime()
     update_time = fields.DateTime()
     state = fields.Integer()
+    type_id = fields.Integer()
 
 
 class VideoSchema(BaseSchema):
@@ -106,6 +109,7 @@ class VideoSchema(BaseSchema):
     author = fields.String()
     author_home = fields.String()
     tags = fields.String()
+    product = fields.String()
 
 
 # 全局异常处理
@@ -136,17 +140,19 @@ def request_handle():
         abort(make_response(jsonify({'message': 'Illegal request'}), 400))
 
 
-@app.route('/popular/<day>', methods=['GET'])
+@app.route('/popular/<type_id>/<day>', methods=['GET'])
 @cache.cached(query_string=True)
-def popular(day):
+def popular(type_id, day):
     page, pages, sort = parameter_handler(Video, '-rate')
     try:
         day = int(day)
+        type_id = int(type_id)
     except ValueError:
         error('parameter error', 400)
     now = datetime.datetime.now()
     pagination = Video.query \
-        .filter(Video.pub_date.between(now - datetime.timedelta(days=day), now)) \
+        .filter(Video.pub_date.between(now - datetime.timedelta(days=day), now),
+                Video.type_id == type_id) \
         .order_by(sort) \
         .paginate(page, per_page=pages, error_out=False)
     return jsonify({

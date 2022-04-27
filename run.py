@@ -2,9 +2,9 @@ import datetime
 import hashlib
 import json
 import logging
-import sys
 import time
 from configparser import ConfigParser
+from enum import Enum
 
 import flask_limiter
 from flask import Flask, jsonify, abort, make_response, request
@@ -34,8 +34,8 @@ redis_host, redis_port = cfg.get('redis', 'host'), cfg.get('redis', 'port')
 redis_user, redis_password = cfg.get('redis', 'user'), cfg.get('redis', 'password')
 
 # 数据库连接
-args = sys.argv
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://%s:%s@%s:%s/%s" % (db_user, db_password, db_host, db_port, db_name)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
 # 限速
@@ -128,6 +128,8 @@ def handle_exception(e):
 # 请求拦截
 @app.before_request
 def request_handle():
+    if env == 'dev':
+        return
     timestamp = request.headers.get('timestamp', 0, int)
     sign = request.headers.get('sign', None, str)
     if timestamp == 0 or sign is None:
@@ -140,6 +142,7 @@ def request_handle():
         abort(make_response(jsonify({'message': 'Illegal request'}), 400))
 
 
+# 流行
 @app.route('/popular/<type_id>/<day>', methods=['GET'])
 @cache.cached(query_string=True)
 def popular(type_id, day):
@@ -155,9 +158,57 @@ def popular(type_id, day):
                 Video.type_id == type_id) \
         .order_by(sort) \
         .paginate(page, per_page=pages, error_out=False)
+    return pagination_result(VideoSchema(), pagination)
+
+
+# 搜索
+@app.route('/search/<vid>', methods=['GET'])
+@cache.cached(query_string=True)
+def vid_search(vid: str):
+    return search(Video, 'vid', vid, condition_way.LIKE.value)
+
+
+# 产品
+@app.route('/product/<product>', methods=['GET'])
+@cache.cached(query_string=True)
+def product_search(product: str):
+    return search(Video, 'product', product, condition_way.EQUAL.value)
+
+
+# 作者
+@app.route('/author/<author>', methods=['GET'])
+@cache.cached(query_string=True)
+def author_search(author: str):
+    return search(Video, 'author', author, condition_way.EQUAL.value)
+
+
+class condition_way(Enum):
+    LIKE = 1
+    EQUAL = 2
+
+
+def search(model: object, attribute: str, target: str, way: int):
+    if hasattr(model, attribute) is False:
+        raise ValueError('attribute error')
+    condition = None
+    if way == condition_way.LIKE.value:
+        condition = getattr(model, attribute).like('%' + target + '%')
+    elif way == condition_way.EQUAL.value:
+        condition = getattr(model, attribute) == target
+    if condition is None:
+        raise ValueError('condition error')
+    page, pages, sort = parameter_handler(Video, '-rate')
+    pagination = model.query \
+        .filter(condition) \
+        .order_by(sort) \
+        .paginate(page, per_page=pages, error_out=False)
+    return pagination_result(VideoSchema(), pagination)
+
+
+def pagination_result(o: BaseSchema, pagination):
     return jsonify({
         'data': {
-            'record': json.loads(VideoSchema().dumps(pagination.items, many=True)),
+            'record': json.loads(o.dumps(pagination.items, many=True)),
             'page': pagination.page,
             'pages': pagination.pages,
             'total': pagination.total

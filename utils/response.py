@@ -34,12 +34,12 @@ class condition_way(Enum):
     EQUAL = 2
 
 
-def search(model: object, attribute: str, target: str, way: int):
+def search(model: object, attribute: str, target: object, way: int):
     if hasattr(model, attribute) is False:
         raise ValueError('attribute error')
     condition = None
     if way == condition_way.LIKE.value:
-        condition = getattr(model, attribute).like('%' + target + '%')
+        condition = getattr(model, attribute).like('%' + str(target) + '%')
     elif way == condition_way.EQUAL.value:
         condition = getattr(model, attribute) == target
     if condition is None:

@@ -4,7 +4,7 @@ from flask import Flask
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-from blueprints import video, product, author, star
+from blueprints import video, product, author, star, tag
 from comment.cache import cache
 from comment.db import db
 
@@ -24,7 +24,6 @@ def create_app():
     db_host, db_port = cfg.get('db', 'host'), cfg.get('db', 'port')
     db_user, db_password, db_name = cfg.get('db', 'user'), cfg.get('db', 'password'), cfg.get('db', 'name')
     host, limit = cfg.get('server', 'host'), cfg.get('server', 'limit')
-
     # 数据库连接
     app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://%s:%s@%s:%s/%s" % (db_user, db_password, db_host, db_port, db_name)
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -39,4 +38,5 @@ def create_app():
     app.register_blueprint(product.pd)
     app.register_blueprint(author.ah)
     app.register_blueprint(star.sr)
+    app.register_blueprint(tag.tg)
     return app

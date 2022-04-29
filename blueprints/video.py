@@ -1,11 +1,8 @@
 import datetime
-import json
 
-from flask import Blueprint
+from flask import Blueprint, jsonify
 
 from comment.cache import cache
-from model.author import Author
-from model.product import Product
 from model.video import Video
 from schema.video import VideoSchema
 from utils.response import parameter_handler, error, pagination_result, search, condition_way
@@ -29,31 +26,42 @@ def popular(day):
     return pagination_result(VideoSchema(), pagination)
 
 
-@vd.route('/test', methods=['GET'])
-def test():
-    page, pages, sort = parameter_handler(Video, '-rate')
+@vd.route('/page', methods=['GET'])
+@cache.cached(query_string=True)
+def _list():
+    page, pages, sort = parameter_handler(Video, '-create_time')
     pagination = Video.query \
-        .join(Product, Video.product == Product.id) \
-        .join(Author, Video.author == Author.id) \
         .order_by(sort) \
-        .with_entities(Video, Product.name, Author.name) \
         .paginate(page, per_page=pages, error_out=False)
     return pagination_result(VideoSchema(), pagination)
 
 
 @vd.route('/search/<vid>', methods=['GET'])
 @cache.cached(query_string=True)
-def vid_search(vid: str):
-    return search(Video, 'vid', vid, condition_way.EQUAL.value)
+def _search(vid: str):
+    return search(Video, 'vid', vid, condition_way.EQUAL.value, 'rate', VideoSchema())
+
+
+@vd.route('/detail/<_id>', methods=['GET'])
+@cache.cached(query_string=True)
+def _detail(_id: int):
+    detail = Video.query.filter(Video.id == _id).first()
+    return jsonify({
+        'data': VideoSchema().dump(detail)
+    })
 
 
 @vd.route('/product/<pid>', methods=['GET'])
 @cache.cached(query_string=True)
-def product_search(pid: int):
-    return search(Video, 'product', pid, condition_way.EQUAL.value)
+def _pd(pid: int):
+    page, pages, sort = parameter_handler(Video, '-rate')
+    pagination = Video.query.filter(Video.pid == pid).order_by(sort).paginate(page, per_page=pages, error_out=False)
+    return pagination_result(VideoSchema(), pagination)
 
 
 @vd.route('/author/<aid>', methods=['GET'])
 @cache.cached(query_string=True)
-def author_search(aid: int):
-    return search(Video, 'author', aid, condition_way.EQUAL.value)
+def _ah(aid: int):
+    page, pages, sort = parameter_handler(Video, '-rate')
+    pagination = Video.query.filter(Video.aid == aid).order_by(sort).paginate(page, per_page=pages, error_out=False)
+    return pagination_result(VideoSchema(), pagination)

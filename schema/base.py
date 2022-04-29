@@ -6,4 +6,3 @@ class BaseSchema(Schema):
     create_time = fields.DateTime()
     update_time = fields.DateTime()
     state = fields.Integer()
-    type_id = fields.Integer()

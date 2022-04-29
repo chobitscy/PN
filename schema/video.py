@@ -1,6 +1,8 @@
 from marshmallow import fields
 
+from schema.author import AuthorSchema
 from schema.base import BaseSchema
+from schema.product import ProductSchema
 
 
 class VideoSchema(BaseSchema):
@@ -17,7 +19,8 @@ class VideoSchema(BaseSchema):
     pub_date = fields.DateTime()
     thumb = fields.String()
     print_screen = fields.String()
-    author = fields.String()
-    author_home = fields.String()
-    tags = fields.String()
-    product = fields.String()
+    aid = fields.Integer()
+    tid = fields.String()
+    pid = fields.Integer()
+    product = fields.Nested(ProductSchema, only=('name', 'home', 'avatar'))
+    author = fields.Nested(AuthorSchema, only=('name', 'home', 'avatar'))

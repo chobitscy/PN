@@ -1,3 +1,5 @@
+from sqlalchemy.orm import relationship
+
 from comment.db import db
 from model.base import Base
 
@@ -17,7 +19,8 @@ class Video(db.Model, Base):
     pub_date = db.Column(db.DateTime)
     thumb = db.Column(db.String)
     print_screen = db.Column(db.String)
-    author = db.Column(db.BigInteger, db.ForeignKey('author.id'))
-    author_home = db.Column(db.String)
-    tags = db.Column(db.String)
-    product = db.Column(db.BigInteger, db.ForeignKey('product.id'))
+    aid = db.Column(db.BigInteger, db.ForeignKey('author.id'))
+    tid = db.Column(db.TEXT)
+    pid = db.Column(db.BigInteger, db.ForeignKey('product.id'))
+    product = relationship("Product")
+    author = relationship("Author")

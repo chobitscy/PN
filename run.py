@@ -47,4 +47,5 @@ if __name__ == '__main__':
     cfg = ConfigParser()
     cfg.read('config.ini', encoding='utf-8')
     env = cfg.get('server', 'env')
-    app.run()
+    host = cfg.get('server', 'host')
+    app.run(host=host)

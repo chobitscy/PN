@@ -22,7 +22,7 @@ def create_app():
     cfg.read('config.ini', encoding='utf-8')
     db_host, db_port = cfg.get('db', 'host'), cfg.get('db', 'port')
     db_user, db_password, db_name = cfg.get('db', 'user'), cfg.get('db', 'password'), cfg.get('db', 'name')
-    host, limit = cfg.get('server', 'host'), cfg.get('server', 'limit')
+    limit = cfg.get('server', 'limit')
     # 数据库连接
     app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://%s:%s@%s:%s/%s" % (db_user, db_password, db_host, db_port, db_name)
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True

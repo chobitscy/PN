@@ -1,3 +1,5 @@
+from flask_sqlalchemy import SQLAlchemy
+
 from configparser import ConfigParser
 
 from flask_caching import Cache
@@ -20,3 +22,5 @@ cache = Cache(config={
     'CACHE_DEFAULT_TIMEOUT': 60 * expired,
     'CACHE_REDIS_URL': redis_url
 })
+
+db = SQLAlchemy()

@@ -1,4 +1,4 @@
-from comment.db import db
+from comment.extends import db
 
 
 class Base:

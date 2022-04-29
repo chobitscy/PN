@@ -2,7 +2,7 @@ import datetime
 
 from flask import Blueprint, jsonify
 
-from comment.cache import cache
+from comment.extends import cache
 from model.video import Video
 from schema.video import VideoSchema
 from utils.response import parameter_handler, error, pagination_result, search, condition_way

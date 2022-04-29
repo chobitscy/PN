@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-from comment.cache import cache
+from comment.extends import cache
 from model.tag import Tag
 from schema.tag import TagSchema
 from utils.response import parameter_handler, pagination_result

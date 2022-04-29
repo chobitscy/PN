@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-from comment.cache import cache
+from comment.extends import cache
 from model.author import Author
 from schema.author import AuthorSchema
 from utils.response import parameter_handler, pagination_result

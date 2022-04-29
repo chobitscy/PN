@@ -1,11 +1,11 @@
 import hashlib
 import logging
 import time
+from configparser import ConfigParser
 
 import flask_limiter
 from flask import jsonify, request, abort, make_response
 
-from comment.cache import cfg
 from flaskr import create_app
 
 app = create_app()
@@ -44,6 +44,7 @@ def request_handle():
 
 
 if __name__ == '__main__':
+    cfg = ConfigParser()
     cfg.read('config.ini', encoding='utf-8')
     env = cfg.get('server', 'env')
     app.run()

@@ -3,7 +3,7 @@ from enum import Enum
 
 from flask import make_response, abort, jsonify, request
 
-from comment.db import db
+from comment.extends import db
 from model.video import Video
 from schema.base import BaseSchema
 

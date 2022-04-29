@@ -4,9 +4,8 @@ from flask import Flask
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-from blueprints import video, product, author, star, tag
-from comment.cache import cache
-from comment.db import db
+from blueprints import video, product, author, star, tag, user
+from comment.extends import db, cache
 
 
 def create_app():
@@ -27,6 +26,7 @@ def create_app():
     # 数据库连接
     app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://%s:%s@%s:%s/%s" % (db_user, db_password, db_host, db_port, db_name)
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+    app.config['SECRET_KEY'] = "\xc0\x00v\xc4\x9fe\x18\xb6\x8a^\x97C\x8e<\xc2\xdb7\xad\xe3\xf6\xf5\x98\x0c3"
 
     # 限速
     Limiter(app=app, key_func=get_remote_address, default_limits=[limit])
@@ -39,4 +39,5 @@ def create_app():
     app.register_blueprint(author.ah)
     app.register_blueprint(star.sr)
     app.register_blueprint(tag.tg)
+    app.register_blueprint(user.ur)
     return app

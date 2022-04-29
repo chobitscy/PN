@@ -1,6 +1,6 @@
 from sqlalchemy.orm import relationship
 
-from comment.db import db
+from comment.extends import db
 from model.base import Base
 
 

@@ -34,13 +34,13 @@ def request_handle():
     timestamp = request.headers.get('timestamp', 0, int)
     sign = request.headers.get('sign', None, str)
     if timestamp == 0 or sign is None:
-        abort(make_response(jsonify({'message': 'Illegal request'}), 400))
+        abort(make_response(jsonify({'message': 'illegal request'}), 400))
     # 当客户端和服务器的时间相差 20 秒，客户端错误
     if env != 'dev' and int(round(time.time() * 1000)) - int(timestamp) > 20 * 1000:
         abort(make_response(jsonify({'message': 'timeout'}), 400))
     value = str(hashlib.md5(str('%.2f' % float(timestamp / len(request.path))).encode('utf-8')).hexdigest()).upper()
     if value is None or value != sign:
-        abort(make_response(jsonify({'message': 'Illegal request'}), 400))
+        abort(make_response(jsonify({'message': 'sign error'}), 400))
 
 
 if __name__ == '__main__':

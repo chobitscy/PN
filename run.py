@@ -43,7 +43,8 @@ def request_handle():
         abort(make_response(jsonify({'message': 'sign error', 'data': {
             'sign': value,
             'len': len(request.path),
-            'timestamp': timestamp
+            'timestamp': timestamp,
+            'value': '%.2f' % float(timestamp / len(request.path))
         }}), 400))
 
 

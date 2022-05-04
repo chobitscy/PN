@@ -39,7 +39,7 @@ def request_handle():
     # 当客户端和服务器的时间相差 20 秒，客户端错误
     if env != 'dev' and int(round(time.time() * 1000)) - int(timestamp) > 20 * 1000:
         abort(make_response(jsonify({'message': 'timeout'}), 400))
-    value = str(hashlib.md5(str(round_up(float(timestamp / len(request.path)), 2)).encode('utf-8')).hexdigest()).upper()
+    value = str(hashlib.md5(str(round_up(float(timestamp / len(request.path)), 2))).hexdigest()).upper()
     if value is None or value != sign:
         abort(make_response(jsonify({'message': 'sign error', 'data': {
             'sign': value,

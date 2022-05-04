@@ -22,5 +22,5 @@ class VideoSchema(BaseSchema):
     aid = fields.Integer()
     tid = fields.String()
     pid = fields.Integer()
-    product = fields.Nested(ProductSchema, only=('name', 'home', 'avatar'))
+    product = fields.Nested(ProductSchema, only=('id', 'name', 'home', 'avatar'))
     author = fields.Nested(AuthorSchema, only=('name', 'home', 'avatar'))

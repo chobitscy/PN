@@ -44,12 +44,7 @@ def request_handle():
     value = str(
         hashlib.md5(str(res).encode('utf-8')).hexdigest()).upper()
     if value is None or value != sign:
-        abort(make_response(jsonify({'message': 'sign error', 'data': {
-            'sign': value,
-            'len': len(request.path),
-            'timestamp': timestamp,
-            'value': res
-        }}), 400))
+        abort(make_response(jsonify({'message': 'sign error'}), 400))
 
 
 if __name__ == '__main__':

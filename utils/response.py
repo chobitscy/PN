@@ -84,3 +84,17 @@ def pagination_result(schema: BaseSchema, pagination):
             'total': pagination.total
         }
     })
+
+
+def round_up(n, m):
+    """
+    保留小数点，避免遇 5 不进
+    :param n: 目标
+    :param m: 保留位
+    :return: 结果
+    """
+    n = str(n)
+    if len(n) - n.index(".") - 1 == m + 1:
+        n += "1"
+    n = float(n)
+    return round(n, m)

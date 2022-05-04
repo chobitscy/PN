@@ -40,7 +40,11 @@ def request_handle():
         abort(make_response(jsonify({'message': 'timeout'}), 400))
     value = str(hashlib.md5(str('%.2f' % float(timestamp / len(request.path))).encode('utf-8')).hexdigest()).upper()
     if value is None or value != sign:
-        abort(make_response(jsonify({'message': 'sign error'}), 400))
+        abort(make_response(jsonify({'message': 'sign error', 'data': {
+            'sign': value,
+            'len': len(request.path),
+            'timestamp': timestamp
+        }}), 400))
 
 
 if __name__ == '__main__':

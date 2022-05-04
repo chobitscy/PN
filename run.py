@@ -45,7 +45,7 @@ def request_handle():
             'sign': value,
             'len': len(request.path),
             'timestamp': timestamp,
-            'value': '%.2f' % float(timestamp / len(request.path))
+            'value': round_up(float(timestamp / len(request.path)), 2)
         }}), 400))
 
 

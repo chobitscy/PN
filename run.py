@@ -1,3 +1,4 @@
+import decimal
 import hashlib
 import logging
 import time
@@ -38,14 +39,16 @@ def request_handle():
     # 当客户端和服务器的时间相差 20 秒，客户端错误
     if env != 'dev' and int(round(time.time() * 1000)) - int(timestamp) > 20 * 1000:
         abort(make_response(jsonify({'message': 'timeout'}), 400))
+    decimal.getcontext().rounding = "ROUND_HALF_UP"
+    res = decimal.Decimal(str(float(timestamp / len(request.path)))).quantize(decimal.Decimal("0.00"))
     value = str(
-        hashlib.md5(str("{:.2f}".format(float(timestamp / len(request.path)))).encode('utf-8')).hexdigest()).upper()
+        hashlib.md5(str(res).encode('utf-8')).hexdigest()).upper()
     if value is None or value != sign:
         abort(make_response(jsonify({'message': 'sign error', 'data': {
             'sign': value,
             'len': len(request.path),
             'timestamp': timestamp,
-            'value': "{:.2f}".format(float(timestamp / len(request.path)))
+            'value': res
         }}), 400))
 
 

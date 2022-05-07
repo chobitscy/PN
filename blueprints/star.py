@@ -9,21 +9,19 @@ from wrapper.auth import auth
 sr = Blueprint('star', __name__, url_prefix='/star')
 
 
-@sr.route('/list', methods=['GET'])
+@sr.route('/page', methods=['GET'])
 @auth
-def _list(_id):
+def _page(uid):
     page, pages, sort = parameter_handler(Star, '-update_time')
-    pagination = Star.query.filter(Star.uid == _id).paginate(page, per_page=pages, error_out=False)
+    pagination = Star.query.filter(Star.uid == uid).paginate(page, per_page=pages, error_out=False)
     return pagination_result(StarSchema(), pagination)
 
 
 @sr.route('/add', methods=['POST'])
 @auth
-def _add(_id):
-    vid = request.form.get('vid') or None
-    if vid is None:
-        error('vid is required', 400)
-    star = Star(vid, _id)
+def _add(uid):
+    vid = get_from('vid')
+    star = Star(vid, uid)
     db.session.add(star)
     db.session.commit()
     return jsonify({

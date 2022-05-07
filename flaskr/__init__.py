@@ -4,7 +4,7 @@ from flask import Flask
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-from blueprints import video, product, star, tag, user
+from blueprints import video, product, star, tag, user, follow
 from comment.extends import db, cache
 
 
@@ -39,4 +39,5 @@ def create_app():
     app.register_blueprint(star.sr)
     app.register_blueprint(tag.tg)
     app.register_blueprint(user.ur)
+    app.register_blueprint(follow.fl)
     return app

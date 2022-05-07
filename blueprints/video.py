@@ -57,11 +57,3 @@ def _pd(pid: int):
     page, pages, sort = parameter_handler(Video, '-rate')
     pagination = Video.query.filter(Video.pid == pid).order_by(sort).paginate(page, per_page=pages, error_out=False)
     return pagination_result(VideoSchema(), pagination)
-
-
-@vd.route('/author/<aid>', methods=['GET'])
-@cache.cached(query_string=True)
-def _ah(aid: int):
-    page, pages, sort = parameter_handler(Video, '-rate')
-    pagination = Video.query.filter(Video.aid == aid).order_by(sort).paginate(page, per_page=pages, error_out=False)
-    return pagination_result(VideoSchema(), pagination)

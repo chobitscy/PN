@@ -11,7 +11,7 @@ from utils.response import error
 
 class Star(db.Model, Base):
     __tablename__ = 'star'
-    vid = db.Column(db.BigInteger, db.ForeignKey('video.id'))
+    vid = db.Column(db.BigInteger, db.ForeignKey('video.vid'))
     uid = db.Column(db.BigInteger)
     video = relationship("Video")
 

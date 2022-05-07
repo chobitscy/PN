@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 
-from comment.extends import db, cache
+from comment.extends import db, cache, redis_client
 from model.follow import Follow
 from model.video import Video
 from schema.video import VideoSchema
@@ -45,6 +45,8 @@ def _add(uid):
     db.session.add(follow)
     db.session.commit()
     del_ch(uid)
+    # todo delay update product
+    redis_client.lpush('delay_follow', pid)
     return jsonify({
         'message': 'ok'
     })

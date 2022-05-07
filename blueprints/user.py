@@ -40,7 +40,7 @@ def register():
 def login():
     email = request.form.get('email') or None
     password = request.form.get('password') or None
-    expired = request.form.get('expired') or 1
+    expired = int(request.form.get('expired', 1))
     if email is None or password is None:
         error('email or password is null', 400)
     password = hashlib.md5(password.encode('utf8')).hexdigest()

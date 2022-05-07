@@ -84,3 +84,10 @@ def pagination_result(schema: BaseSchema, pagination):
             'total': pagination.total
         }
     })
+
+
+def get_from(arg):
+    value = request.form.get(arg) or None
+    if value is None:
+        error('%s is required' % arg, 400)
+    return value

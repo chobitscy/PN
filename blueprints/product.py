@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, jsonify
 
 from comment.extends import cache
 from model.product import Product
@@ -8,9 +8,18 @@ from utils.response import parameter_handler, pagination_result
 pd = Blueprint('product', __name__, url_prefix='/product')
 
 
-@pd.route('/list', methods=['GET'])
+@pd.route('/page', methods=['GET'])
 @cache.cached(query_string=True)
-def _list():
+def _page():
     page, pages, sort = parameter_handler(Product, '-create_time')
     pagination = Product.query.paginate(page, per_page=pages, error_out=False)
     return pagination_result(ProductSchema(), pagination)
+
+
+@pd.route('/detail/<_id>', methods=['GET'])
+@cache.cached(query_string=True)
+def _detail(_id: int):
+    detail = Product.query.filter(Product.id == _id).first()
+    return jsonify({
+        'data': ProductSchema().dump(detail)
+    })

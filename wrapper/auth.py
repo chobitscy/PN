@@ -9,6 +9,6 @@ def auth(func):
     @functools.wraps(func)
     def wrapper():
         token = request.headers["Authorization"]
-        User.decode_auth_token(token)
+        return func(User.decode_auth_token(token))
 
     return wrapper

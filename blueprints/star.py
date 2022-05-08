@@ -13,7 +13,7 @@ sr = Blueprint('star', __name__, url_prefix='/star')
 @auth
 def _page(uid):
     page, pages, sort = parameter_handler(Star, '-update_time')
-    pagination = Star.query.filter(Star.uid == uid).paginate(page, per_page=pages, error_out=False)
+    pagination = Star.query.filter(Star.uid == uid).order_by(sort).paginate(page, per_page=pages, error_out=False)
     return pagination_result(StarSchema(), pagination)
 
 

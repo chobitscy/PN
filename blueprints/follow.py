@@ -33,7 +33,8 @@ def del_ch(uid):
 def _page(uid):
     pid_list = [n.pid for n in _list(uid)]
     page, pages, sort = parameter_handler(Video, '-update_time')
-    pagination = Video.query.filter(Video.pid.in_(pid_list)).paginate(page, per_page=pages, error_out=False)
+    pagination = Video.query.filter(Video.pid.in_(pid_list)).order_by(sort)\
+        .paginate(page, per_page=pages, error_out=False)
     return pagination_result(VideoSchema(), pagination)
 
 

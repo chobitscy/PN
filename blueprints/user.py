@@ -48,7 +48,7 @@ def login():
     password = hashlib.md5(password.encode('utf8')).hexdigest()
     res = User.query.filter(User.email == email, User.password == password).first()
     if res is None:
-        error('auth failure', 400)
+        error('auth failure', 401)
     return jsonify({
         'data': {
             'user': UserSchema(only=('id', 'email')).dump(res),

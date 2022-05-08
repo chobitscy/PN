@@ -12,7 +12,7 @@ pd = Blueprint('product', __name__, url_prefix='/product')
 @cache.cached(query_string=True)
 def _page():
     page, pages, sort = parameter_handler(Product, '-create_time')
-    pagination = Product.query.paginate(page, per_page=pages, error_out=False)
+    pagination = Product.query.order_by(sort).paginate(page, per_page=pages, error_out=False)
     return pagination_result(ProductSchema(), pagination)
 
 

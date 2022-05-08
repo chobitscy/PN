@@ -52,7 +52,7 @@ def request_handle():
     if path == '/user/register' or path == '/user/login':
         return
     if 'Authorization' not in request.headers:
-        error('auth error', 401)
+        error('auth failure', 401)
     token = request.headers["Authorization"]
     User.decode_auth_token(token)
 

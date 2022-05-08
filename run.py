@@ -8,6 +8,8 @@ import flask_limiter
 from flask import jsonify, request, abort, make_response
 
 from flaskr import create_app
+from model.user import User
+from utils.response import error
 
 app = create_app()
 
@@ -45,6 +47,10 @@ def request_handle():
         hashlib.md5(str(res).encode('utf-8')).hexdigest()).upper()
     if value is None or value != sign:
         abort(make_response(jsonify({'message': 'sign error'}), 400))
+    if 'Authorization' not in request.headers:
+        error('auth error', 401)
+    token = request.headers["Authorization"]
+    User.decode_auth_token(token)
 
 
 if __name__ == '__main__':

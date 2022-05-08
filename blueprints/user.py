@@ -1,7 +1,7 @@
 import hashlib
 import re
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from sqlalchemy.exc import IntegrityError
 
 from comment.extends import db
@@ -14,6 +14,8 @@ ur = Blueprint('user', __name__, url_prefix='/user')
 
 @ur.route('/register', methods=['POST'])
 def register():
+    if current_app.config['register'] is False:
+        error('Not allowed register', 403)
     email = request.form.get('email') or None
     password = request.form.get('password') or None
     if email is None or password is None:

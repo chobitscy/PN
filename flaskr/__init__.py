@@ -25,11 +25,17 @@ def create_app():
     limit = cfg.get('server', 'limit')
     redis_host, redis_port = cfg.get('redis', 'host') or None, cfg.get('redis', 'port') or None
     redis_user, redis_password = cfg.get('redis', 'user') or None, cfg.get('redis', 'password') or None
+    register = cfg.getboolean('server', 'register')
 
     # 数据库连接
     app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://%s:%s@%s:%s/%s" % (db_user, db_password, db_host, db_port, db_name)
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+    # JWT KEY
     app.config['SECRET_KEY'] = "\xc0\x00v\xc4\x9fe\x18\xb6\x8a^\x97C\x8e<\xc2\xdb7\xad\xe3\xf6\xf5\x98\x0c3"
+
+    # register switch
+    app.config['register'] = register
 
     # redis 连接
     if redis_password is not None:

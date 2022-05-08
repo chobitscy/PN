@@ -7,3 +7,5 @@ class Product(db.Model, Base):
     name = db.Column(db.String)
     home = db.Column(db.String)
     avatar = db.Column(db.String)
+    works = db.Column(db.Integer)
+    fans = db.Column(db.Integer)

@@ -7,3 +7,5 @@ class ProductSchema(BaseSchema):
     name = fields.String()
     home = fields.String()
     avatar = fields.String()
+    works = fields.Integer()
+    fans = fields.Integer()

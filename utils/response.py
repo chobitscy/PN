@@ -61,7 +61,7 @@ def search(model: object, attribute: str, target: object, way: int, sort: str, s
         raise ValueError('condition error')
     if hasattr(model, sort) is False:
         raise ValueError('sort error')
-    page, pages, sort = parameter_handler(Video, '-' + sort)
+    page, pages, sort = parameter_handler(model, '-' + sort)
     pagination = model.query \
         .filter(condition) \
         .order_by(sort) \

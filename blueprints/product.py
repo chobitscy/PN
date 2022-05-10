@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify
 from comment.extends import cache
 from model.product import Product
 from schema.product import ProductSchema
-from utils.response import parameter_handler, pagination_result
+from utils.response import parameter_handler, pagination_result, search, condition_way
 
 pd = Blueprint('product', __name__, url_prefix='/product')
 
@@ -23,3 +23,9 @@ def _detail(_id: int):
     return jsonify({
         'data': ProductSchema().dump(detail)
     })
+
+
+@pd.route('/search/<name>', methods=['GET'])
+@cache.cached(query_string=True)
+def _search(name: str):
+    return search(Product, 'name', name, condition_way.LIKE.value, 'fans', ProductSchema())

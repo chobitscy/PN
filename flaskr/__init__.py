@@ -1,6 +1,7 @@
 from configparser import ConfigParser
 
 from flask import Flask
+from flask_apscheduler import APScheduler
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
@@ -37,6 +38,21 @@ def create_app():
     # register switch
     app.config['register'] = register
 
+    class APSchedulerJobConfig(object):
+        SCHEDULER_API_ENABLED = True
+        JOBS = [
+            {
+                'id': '1',
+                'func': 'scheduler.redis:update_product_follow',
+                'args': '',
+                'trigger': 'interval',
+                'seconds': 10,
+            }
+        ]
+
+    # scheduler
+    app.config.from_object(APSchedulerJobConfig())
+
     # redis 连接
     if redis_password is not None:
         redis_url = "redis://:%s@%s:%s/%s" % (redis_password, redis_host, redis_port, db_name)
@@ -51,6 +67,10 @@ def create_app():
     cache.init_app(app)
     # todo connection pool
     redis_client.init_app(app, encoding='utf8', decode_responses=True)
+
+    scheduler = APScheduler()
+    scheduler.init_app(app)
+    scheduler.start()
 
     app.register_blueprint(video.vd)
     app.register_blueprint(product.pd)

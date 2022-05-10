@@ -9,3 +9,4 @@ class Product(db.Model, Base):
     avatar = db.Column(db.String)
     works = db.Column(db.Integer)
     fans = db.Column(db.Integer)
+    follow = db.Column(db.Integer)

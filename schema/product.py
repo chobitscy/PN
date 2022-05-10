@@ -9,3 +9,4 @@ class ProductSchema(BaseSchema):
     avatar = fields.String()
     works = fields.Integer()
     fans = fields.Integer()
+    follow = fields.Integer()

@@ -4,8 +4,8 @@ from enum import Enum
 from flask import make_response, abort, jsonify, request
 
 from comment.extends import db
-from model.video import Video
 from schema.base import BaseSchema
+from template.result import format_result
 
 
 def error(message, code):
@@ -76,14 +76,14 @@ def pagination_result(schema: BaseSchema, pagination):
     :param pagination: 分页结果
     :return: json
     """
-    return jsonify({
-        'data': {
-            'record': json.loads(schema.dumps(pagination.items, many=True)),
-            'page': pagination.page,
-            'pages': pagination.pages,
-            'total': pagination.total
-        }
-    })
+    return jsonify(
+        format_result(
+            json.loads(schema.dumps(pagination.items, many=True)),
+            pagination.page,
+            pagination.pages,
+            pagination.total
+        )
+    )
 
 
 def get_from(arg):

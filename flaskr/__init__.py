@@ -45,8 +45,11 @@ def create_app():
                 'id': '1',
                 'func': 'scheduler.redis:update_product_follow',
                 'args': '',
-                'trigger': 'interval',
-                'seconds': 10,
+                'trigger': 'cron',
+                'day': '*',
+                'hour': '0',
+                'minute': '0',
+                'second': '0',
             }
         ]
 

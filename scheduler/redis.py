@@ -13,8 +13,6 @@ def update_product_follow():
             follow_list = redis_client.lrange(key, 0, -1)
             for k, g in groupby(sorted(follow_list), key=lambda x: x):
                 total = len(list(g))
-                print(k, total)
                 Product.query.filter(Product.id == k).update({'follow': Product.follow + total})
                 db.session.commit()
             redis_client.delete(key)
-            print('update success')

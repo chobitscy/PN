@@ -1,8 +1,9 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint
 
 from comment.extends import db
 from model.star import Star
 from schema.star import StarSchema
+from template.result import operation_response
 from utils.response import parameter_handler, pagination_result, error, get_from
 from wrapper.auth import auth
 
@@ -20,24 +21,20 @@ def _page(uid):
 @sr.route('/add', methods=['POST'])
 @auth
 def _add(uid):
-    vid = get_from('vid')
+    vid = get_from('vid', str)
     star = Star(vid, uid)
     db.session.add(star)
     db.session.commit()
-    return jsonify({
-        'message': 'ok'
-    })
+    return operation_response(True)
 
 
 @sr.route('/remove', methods=['DELETE'])
 @auth
 def _remove(uid):
-    _id = get_from('id')
+    _id = get_from('id', int)
     star = Star.query.filter(Star.id == _id, Star.uid == uid).first()
     if star is None:
         error('star not exist', 500)
     db.session.delete(star)
     db.session.commit()
-    return jsonify({
-        'message': 'ok'
-    })
+    return operation_response(True)

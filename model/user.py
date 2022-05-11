@@ -13,12 +13,15 @@ from utils.response import error
 
 class User(db.Model, Base):
     __tablename__ = 'user'
+    name = db.Column(db.String)
+    avatar = db.Column(db.String)
     email = db.Column(db.String)
     password = db.Column(db.String)
     ip = db.Column(db.String)
 
-    def __init__(self, email, password):
+    def __init__(self, name, email, password):
         self.id = snowflake.client.get_guid()
+        self.name = name
         self.email = email
         self.password = hashlib.md5(password.encode('utf8')).hexdigest()
         self.ip = request.remote_addr

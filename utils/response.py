@@ -5,7 +5,7 @@ from flask import make_response, abort, jsonify, request
 
 from comment.extends import db
 from schema.base import BaseSchema
-from template.result import format_result
+from template.result import pagination_response
 
 
 def error(message, code):
@@ -76,18 +76,22 @@ def pagination_result(schema: BaseSchema, pagination):
     :param pagination: 分页结果
     :return: json
     """
-    return jsonify(
-        format_result(
+    return pagination_response(
             json.loads(schema.dumps(pagination.items, many=True)),
             pagination.page,
             pagination.pages,
             pagination.total
         )
-    )
 
 
-def get_from(arg):
-    value = request.form.get(arg) or None
+def get_from(arg, tp=str):
+    """
+    从 POST form 里获取数据
+    :param arg: 参数
+    :param tp: 类型
+    :return: 值
+    """
+    value = request.form.get(arg, default=None, type=tp)
     if value is None:
         error('%s is required' % arg, 400)
     return value

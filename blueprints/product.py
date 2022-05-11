@@ -4,6 +4,7 @@ from comment.extends import cache, db, redis_client
 from model.follow import Follow
 from model.product import Product
 from schema.product import ProductSchema
+from template.result import operation_response
 from utils.response import parameter_handler, pagination_result, search, condition_way, get_from, error
 from wrapper.auth import auth
 
@@ -43,15 +44,13 @@ def _add(uid):
     del_ch(uid)
     # delay update product
     redis_client.lpush('delay_follow', pid)
-    return jsonify({
-        'message': 'ok'
-    })
+    return operation_response(True)
 
 
 @pd.route('/unfollow', methods=['DELETE'])
 @auth
 def _remove(uid):
-    _id = get_from('id')
+    _id = get_from('id', int)
     follow = Follow.query.filter(Follow.id == _id, Follow.uid == uid).first()
     if follow is None:
         error('follow not exist', 500)
@@ -59,9 +58,7 @@ def _remove(uid):
     db.session.commit()
     del_ch(uid)
     redis_client.lrem('delay_follow', 1, follow.pid)
-    return jsonify({
-        'message': 'ok'
-    })
+    return operation_response(True)
 
 
 # 删除缓存

@@ -5,8 +5,8 @@ from flask_apscheduler import APScheduler
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-from blueprints import video, product, star, tag, user, follow
-from comment.extends import db, cache, redis_client
+from blueprints import video, product, star, tag, user, follow, comment
+from comment.extends import db, cache, redis_client, mgo_db
 
 
 def create_app():
@@ -14,10 +14,7 @@ def create_app():
     app.config.from_mapping(
         SECRET_KEY='dev'
     )
-    # json 不排序
-    app.config['JSON_SORT_KEYS'] = False
-    # json 中文
-    app.config['JSON_AS_ASCII'] = False
+
     # 配置
     cfg = ConfigParser()
     cfg.read('config.ini', encoding='utf-8')
@@ -27,6 +24,17 @@ def create_app():
     redis_host, redis_port = cfg.get('redis', 'host') or None, cfg.get('redis', 'port') or None
     redis_user, redis_password = cfg.get('redis', 'user') or None, cfg.get('redis', 'password') or None
     register = cfg.getboolean('server', 'register')
+    mgo_config = {
+        'db': cfg.get('mongo', 'db'),
+        'host': cfg.get('mongo', 'host'),
+        'port': cfg.getint('mongo', 'port')
+    }
+
+    # json 不排序
+    app.config['JSON_SORT_KEYS'] = False
+
+    # json 中文
+    app.config['JSON_AS_ASCII'] = False
 
     # 数据库连接
     app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://%s:%s@%s:%s/%s" % (db_user, db_password, db_host, db_port, db_name)
@@ -66,14 +74,18 @@ def create_app():
     # 限速
     Limiter(app=app, key_func=get_remote_address, default_limits=[limit])
 
+    # init
+    app.config['MONGODB_SETTINGS'] = mgo_config
+
     db.init_app(app)
     cache.init_app(app)
     # todo connection pool
     redis_client.init_app(app, encoding='utf8', decode_responses=True)
-
     scheduler = APScheduler()
     scheduler.init_app(app)
     scheduler.start()
+
+    mgo_db.init_app(app)
 
     app.register_blueprint(video.vd)
     app.register_blueprint(product.pd)
@@ -81,4 +93,5 @@ def create_app():
     app.register_blueprint(tag.tg)
     app.register_blueprint(user.ur)
     app.register_blueprint(follow.fl)
+    app.register_blueprint(comment.cm)
     return app

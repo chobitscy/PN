@@ -1,3 +1,4 @@
+from flask_mongoengine import MongoEngine
 from flask_redis import FlaskRedis
 from flask_sqlalchemy import SQLAlchemy
 
@@ -25,3 +26,5 @@ cache = Cache(config={
 db = SQLAlchemy()
 
 redis_client = FlaskRedis()
+
+mgo_db = MongoEngine()

@@ -22,3 +22,4 @@ class Video(db.Model, Base):
     tid = db.Column(db.TEXT)
     pid = db.Column(db.BigInteger, db.ForeignKey('product.id'))
     product = relationship("Product")
+    comments = db.Column(db.Integer)

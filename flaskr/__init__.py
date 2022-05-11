@@ -58,6 +58,16 @@ def create_app():
                 'hour': '0',
                 'minute': '0',
                 'second': '0',
+            },
+            {
+                'id': '2',
+                'func': 'scheduler.redis:update_video_comments',
+                'args': '',
+                'trigger': 'cron',
+                'day': '*',
+                'hour': '12',
+                'minute': '0',
+                'second': '0',
             }
         ]
 

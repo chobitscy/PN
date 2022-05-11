@@ -3,6 +3,7 @@ import json
 
 from flask import Blueprint, request
 
+from comment.extends import redis_client
 from model.comment import Comment
 from model.user import User
 from schema.comment import CommentSchema
@@ -19,6 +20,7 @@ def _push(uid):
     content = request.form.get('content', type=str)
     username = User.query.filter(User.id == uid).first().name
     Comment(uid=uid, vid=vid, username=username, content=content, create_time=datetime.datetime.now()).save()
+    redis_client.lpush('delay_comments', vid)
     return operation_response(True)
 
 
@@ -28,8 +30,8 @@ def _page(vid: int):
     pages = request.args.get('pages', 10, int)
     result = Comment.objects(vid=vid).paginate(page=page, per_page=pages)
     return pagination_response(
-            json.loads(CommentSchema().dumps(result.items, many=True)),
-            result.page,
-            result.pages,
-            result.total
-        )
+        json.loads(CommentSchema().dumps(result.items, many=True)),
+        result.page,
+        result.pages,
+        result.total
+    )

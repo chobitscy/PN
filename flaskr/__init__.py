@@ -27,7 +27,9 @@ def create_app():
     mgo_config = {
         'db': cfg.get('mongo', 'db'),
         'host': cfg.get('mongo', 'host'),
-        'port': cfg.getint('mongo', 'port')
+        'port': cfg.getint('mongo', 'port'),
+        'username': cfg.get('mongo', 'username'),
+        'password': cfg.get('mongo', 'password')
     }
 
     # json 不排序

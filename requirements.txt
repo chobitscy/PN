@@ -10,3 +10,4 @@ snowflake==0.0.3
 SQLAlchemy==1.4.35
 Flask-APScheduler==1.12.3
 marshmallow-mongoengine==0.30.2
+flask_mongoengine==1.0.0

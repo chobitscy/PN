@@ -22,3 +22,5 @@ class VideoSchema(BaseSchema):
     pid = fields.Integer()
     product = fields.Nested(ProductSchema, only=('id', 'name', 'home', 'avatar'))
     comments = fields.Integer()
+    likes = fields.Integer()
+    reply = fields.Integer()

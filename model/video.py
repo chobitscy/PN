@@ -23,3 +23,5 @@ class Video(db.Model, Base):
     pid = db.Column(db.BigInteger, db.ForeignKey('product.id'))
     product = relationship("Product")
     comments = db.Column(db.Integer)
+    likes = db.Column(db.Integer)
+    reply = db.Column(db.Integer)

@@ -19,7 +19,7 @@ def update_video_comments():
     每天 12 点更新 video 的 comment 数
     :return:
     """
-    delay_update('delay_comments', Video, 'comments')
+    delay_update('delay_comments', Video, 'reply')
 
 
 def delay_update(key: str, model: db.Model, field: str):

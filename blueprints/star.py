@@ -41,7 +41,7 @@ def _remove(uid):
     return operation_response(True)
 
 
-@sr.route('/check', methods=['GTE'])
+@sr.route('/check', methods=['GET'])
 @auth
 def _check(uid):
     vid = request.args.get('vid', None, str)

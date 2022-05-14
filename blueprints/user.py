@@ -6,6 +6,7 @@ from sqlalchemy import exists
 from sqlalchemy.exc import IntegrityError
 
 from comment.extends import db
+from model.comment import Comment
 from model.user import User
 from schema.user import UserSchema
 from template.result import operation_response
@@ -78,4 +79,8 @@ def _update(uid):
         error('Only the current user can modify it', 403)
     User.query.filter(User.id == _id).update({'name': name, 'email': email, 'avatar': avatar})
     db.session.commit()
+    # update comment username
+    comment = Comment.objects(uid=uid, username_ne=name)
+    comment.username = name
+    comment.update()
     return operation_response(True)

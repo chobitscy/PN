@@ -1,9 +1,10 @@
-from flask import Blueprint
+from flask import Blueprint, request
+from sqlalchemy import exists
 
 from comment.extends import db
 from model.star import Star
 from schema.star import StarSchema
-from template.result import operation_response
+from template.result import operation_response, data_response
 from utils.response import parameter_handler, pagination_result, error, get_from
 from wrapper.auth import auth
 
@@ -38,3 +39,13 @@ def _remove(uid):
     db.session.delete(star)
     db.session.commit()
     return operation_response(True)
+
+
+@sr.route('/check', methods=['GTE'])
+@auth
+def _check(uid):
+    vid = request.args.get('vid', None, str)
+    if vid is None:
+        error('vid is none', 400)
+    exist = db.session.query(exists().where(Star.uid == uid, Star.vid == vid)).scalar()
+    return data_response(exist)

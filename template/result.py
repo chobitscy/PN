@@ -32,3 +32,16 @@ def operation_response(success: bool) -> jsonify:
         'code': 1 if success else 0,
         'message': 'ok' if success else 'error'
     })
+
+
+def data_response(data) -> jsonify:
+    """
+    数据果模板
+    :param data: 数据
+    :return:
+    """
+    return jsonify({
+        'code': 1,
+        'message': 'ok',
+        'data': data
+    })

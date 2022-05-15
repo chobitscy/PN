@@ -1,9 +1,10 @@
 import os
 
 from flask import Blueprint, request, send_file
+from werkzeug.utils import secure_filename
 
 from template.result import operation_response
-from utils.response import error
+from utils.response import error, get_from
 
 fe = Blueprint('file', __name__, url_prefix='/file')
 
@@ -17,7 +18,8 @@ if not os.path.exists(path):
 @fe.route('/update', methods=['POST'])
 def _update():
     file = request.files['file']
-    file.save(os.path.join(path, file.filename))
+    name = get_from('name', str)
+    file.save(os.path.join(path, secure_filename(name)))
     return operation_response(True)
 
 

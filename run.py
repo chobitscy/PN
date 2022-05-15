@@ -32,11 +32,14 @@ def handle_exception(e):
 # 请求拦截
 @app.before_request
 def request_handle():
+    endpoint = request.endpoint
+    if endpoint == 'file._update' or endpoint == 'file._download':
+        return
     if env == dev:
         return
+    path = request.path
     timestamp = request.headers.get('timestamp', 0, int)
     sign = request.headers.get('sign', None, str)
-    path = request.path
     if timestamp == 0 or sign is None:
         abort(make_response(jsonify({'message': 'illegal request'}), 400))
     # 当客户端和服务器的时间相差 20 秒，客户端错误

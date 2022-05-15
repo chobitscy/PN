@@ -25,3 +25,4 @@ class Video(db.Model, Base):
     comments = db.Column(db.Integer)
     likes = db.Column(db.Integer)
     reply = db.Column(db.Integer)
+    uncensored = db.Column(db.Integer)

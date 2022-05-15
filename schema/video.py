@@ -24,3 +24,4 @@ class VideoSchema(BaseSchema):
     comments = fields.Integer()
     likes = fields.Integer()
     reply = fields.Integer()
+    uncensored = fields.Integer()

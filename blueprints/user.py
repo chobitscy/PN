@@ -63,7 +63,8 @@ def login():
     return jsonify({
         'data': {
             'user': UserSchema(only=('id', 'email')).dump(res),
-            'token': str(User.encode_auth_token(res.id, expired=expired))
+            'token': str(User.encode_auth_token(res.id, expired=expired)),
+            'ip': request.remote_addr
         }
     })
 

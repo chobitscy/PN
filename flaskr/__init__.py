@@ -6,7 +6,7 @@ from flask_apscheduler import APScheduler
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-from blueprints import video, product, star, tag, user, follow, comment, file
+from blueprints import video, product, star, tag, user, follow, comment
 from comment.extends import db, cache, redis_client, mgo_db
 
 
@@ -107,5 +107,4 @@ def create_app():
     app.register_blueprint(user.ur)
     app.register_blueprint(follow.fl)
     app.register_blueprint(comment.cm)
-    app.register_blueprint(file.fe)
     return app

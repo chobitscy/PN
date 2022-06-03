@@ -60,11 +60,14 @@ def login():
     res = User.query.filter(User.email == email, User.password == password).first()
     if res is None:
         error('auth failure', 401)
+    ip = None
+    if 'X-Real-IP' in request.headers:
+        ip = request.headers['X-Real-IP']
     return jsonify({
         'data': {
             'user': UserSchema(only=('id', 'email')).dump(res),
             'token': str(User.encode_auth_token(res.id, expired=expired)),
-            'ip': request.headers['X-Real-IP']
+            'ip': ip
         }
     })
 

@@ -64,7 +64,7 @@ def login():
         'data': {
             'user': UserSchema(only=('id', 'email')).dump(res),
             'token': str(User.encode_auth_token(res.id, expired=expired)),
-            'ip': request.remote_addr
+            'ip': request.headers['X-Real-IP']
         }
     })
 

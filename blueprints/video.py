@@ -21,7 +21,7 @@ def popular(day):
         error('parameter error', 400)
     now = datetime.datetime.now()
     pagination = Video.query \
-        .filter(Video.pub_date.between(now - datetime.timedelta(days=day), now), Video.create_date is not None) \
+        .filter(Video.pub_date.between(now - datetime.timedelta(days=day), now), Video.create_date.is_not(None)) \
         .order_by(sort) \
         .paginate(page, per_page=pages, error_out=False)
     return pagination_result(VideoSchema(), pagination)
@@ -32,7 +32,7 @@ def popular(day):
 def _list():
     page, pages, sort = parameter_handler(Video, '-create_time')
     pagination = Video.query \
-        .filter(Video.create_date is not None) \
+        .filter(Video.create_date.is_not(None)) \
         .order_by(sort) \
         .paginate(page, per_page=pages, error_out=False)
     return pagination_result(VideoSchema(), pagination)

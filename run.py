@@ -12,8 +12,11 @@ from model.user import User
 from utils.response import error
 
 app = create_app()
-
 dev = 'dev'
+cfg = ConfigParser()
+cfg.read('config.ini', encoding='utf-8')
+env = cfg.get('server', 'env')
+host = cfg.get('server', 'host')
 
 
 # 全局异常处理
@@ -61,8 +64,4 @@ def request_handle():
 
 
 if __name__ == '__main__':
-    cfg = ConfigParser()
-    cfg.read('config.ini', encoding='utf-8')
-    env = cfg.get('server', 'env')
-    host = cfg.get('server', 'host')
     app.run(host=host)

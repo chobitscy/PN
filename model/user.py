@@ -1,6 +1,5 @@
 import datetime
 import hashlib
-import uuid
 
 import jwt
 import snowflake.client

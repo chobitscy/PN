@@ -7,4 +7,4 @@ from schema.video import VideoSchema
 class RecordSchema(BaseSchema):
     vlist_id = fields.Integer()
     vid = fields.Integer()
-    video = fields.Nested(VideoSchema())
+    video = fields.Nested(VideoSchema)

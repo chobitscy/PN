@@ -7,10 +7,10 @@ from comment.extends import db
 from model.base import Base
 
 
-class Record(db.Model, Base):
-    __tablename__ = 'record'
+class Element(db.Model, Base):
+    __tablename__ = 'element'
     vlist_id = db.Column(db.Integer)
-    vid = db.Column(db.Integer)
+    vid = db.Column(db.Integer, db.ForeignKey("video.id"))
     video = relationship("Video")
 
     def __init__(self, vlist_id, vid):

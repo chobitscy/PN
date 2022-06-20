@@ -4,10 +4,10 @@ from schema.base import BaseSchema
 from schema.user import UserSchema
 
 
-class VListSchema(BaseSchema):
+class CollectionSchema(BaseSchema):
     title = fields.String()
     uid = fields.Integer()
     like = fields.Integer()
     cover = fields.String()
     describe = fields.String()
-    user = fields.Nested(UserSchema(), only={"name", "avatar", "email"})
+    user = fields.Nested(UserSchema, only={"name", "avatar", "email"})

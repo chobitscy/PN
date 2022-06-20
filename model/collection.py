@@ -7,9 +7,9 @@ from comment.extends import db
 from model.base import Base
 
 
-class VList(db.Model, Base):
-    __tablename__ = 'vlist'
-    name = db.Column(db.String)
+class Collection(db.Model, Base):
+    __tablename__ = 'collection'
+    title = db.Column(db.String)
     uid = db.Column(db.Integer, db.ForeignKey('user.id'))
     like = db.Column(db.Integer)
     cover = db.Column(db.String)
